@@ -14,7 +14,7 @@ internal class UrlBuilder(private val environment: Environment) {
         }
 
     private fun startsWithApiUrl(p: String) =
-            p == environment.apiBaseUrl() || p.startsWith("${environment.apiBaseUrl()}/")
+            p.startsWith("http")
 
     private fun trimSlashes(s: String): String =
         s.removePrefix("/").removeSuffix("/")
