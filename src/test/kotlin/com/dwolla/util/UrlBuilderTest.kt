@@ -1,6 +1,7 @@
 package com.dwolla.util
 
 import com.dwolla.Dwolla
+import com.dwolla.Environment
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -43,6 +44,28 @@ class UrlBuilderTest {
 
         assertFailsWith(IllegalArgumentException::class, "should not build url not starting with apiUrl") {
             urlBuilder.buildUrl(p1)
+        }
+    }
+
+    private val testHttpUrlsEnv = object : Environment {
+        override fun apiBaseUrl() = "http://api-sandbox.dwolla.com"
+        override fun authBaseUrl() = "http://accounts-sandbox.dwolla.com/auth"
+        override fun tokenUrl() = "http://api-sandbox.dwolla.com/token"
+    }
+    private val testHttpUrlsClient = Dwolla("id", "secret", testHttpUrlsEnv)
+
+    @Test fun `given the environment configured with http urls replaces https with http for further build attempts`() {
+        val httpsUrl = "https://api-sandbox.dwolla.com"
+        val url = testHttpUrlsClient.urlBuilder.buildUrl(httpsUrl)
+
+        assertEquals("http://api-sandbox.dwolla.com", url)
+    }
+
+    @Test fun `given the environment configured with http urls fails if domains not equal`() {
+        val wrongDomainHttpsUrl = "https://something-else.dwolla.com"
+
+        assertFailsWith(IllegalArgumentException::class, "should not build url not starting with apiUrl") {
+            testHttpUrlsClient.urlBuilder.buildUrl(wrongDomainHttpsUrl)
         }
     }
 }
