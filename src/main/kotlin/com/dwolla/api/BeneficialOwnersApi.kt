@@ -4,6 +4,8 @@ import com.dwolla.DwollaClient
 import com.dwolla.api.shared.DateOfBirth
 import com.dwolla.api.shared.InternationalAddress
 import com.dwolla.api.shared.Passport
+import com.dwolla.exception.DwollaApiException
+import com.dwolla.exception.DwollaAuthException
 import com.dwolla.http.JsonBody
 import com.dwolla.resource.beneficialowners.BeneficialOwner
 import com.dwolla.resource.beneficialowners.BeneficialOwners
@@ -12,6 +14,7 @@ import com.dwolla.util.Paths.Companion.CUSTOMERS
 
 class BeneficialOwnersApi(private val client: DwollaClient) {
 
+    @Throws(DwollaApiException::class, DwollaAuthException::class)
     fun get(id: String): BeneficialOwner {
         return client.get(
             BeneficialOwner::class.java,
@@ -19,6 +22,7 @@ class BeneficialOwnersApi(private val client: DwollaClient) {
         ).body
     }
 
+    @Throws(DwollaApiException::class, DwollaAuthException::class)
     fun listByCustomer(customerId: String): BeneficialOwners {
         return client.get(
             BeneficialOwners::class.java,
@@ -26,6 +30,7 @@ class BeneficialOwnersApi(private val client: DwollaClient) {
         ).body
     }
 
+    @Throws(DwollaApiException::class, DwollaAuthException::class)
     fun createForCustomer(
         customerId: String,
         firstName: String,
